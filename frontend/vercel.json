@@ -3,15 +3,10 @@
         {
             "source": "/api/:path*",
             "destination": "https://ai-hrms-evhn.onrender.com/api/:path*"
-        }
-    ],
-    "routes": [
-        {
-            "handle": "filesystem"
         },
         {
-            "src": "/(.*)",
-            "dest": "/index.html"
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }
