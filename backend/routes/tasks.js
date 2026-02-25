@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../db')
+const db = require('../db/db')
 const { authMiddleware, adminOnly } = require('../middleware/auth')
 
 router.use(authMiddleware)
@@ -122,7 +122,7 @@ router.put('/:id', adminOnly, async (req, res) => {
 
 // PATCH /api/tasks/:id/status — both admin AND employee can update status
 router.patch('/:id/status', async (req, res) => {
-    const { status } = req.body
+    const { status, tx_hash } = req.body
     const validStatuses = ['Assigned', 'In Progress', 'Completed']
 
     if (!validStatuses.includes(status)) {
@@ -145,8 +145,8 @@ router.patch('/:id/status', async (req, res) => {
 
         const completedAt = status === 'Completed' ? new Date() : null
         const result = await db.query(
-            'UPDATE tasks SET status = $1, completed_at = $2 WHERE id = $3 RETURNING *',
-            [status, completedAt, req.params.id]
+            'UPDATE tasks SET status = $1, completed_at = $2, tx_hash = $3 WHERE id = $4 RETURNING *',
+            [status, completedAt, tx_hash || null, req.params.id]
         )
         res.json(result.rows[0])
     } catch (err) {

@@ -31,28 +31,28 @@ export default function Login() {
         }
     }
 
-    const inputCls = 'w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition'
+    const inputCls = 'w-full bg-stone-50 border border-stone-200 text-stone-900 placeholder-stone-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition'
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-violet-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-indigo-600 rounded-2xl mb-4 shadow-lg shadow-indigo-200">
+                    <div className="inline-flex items-center justify-center w-14 h-14 bg-orange-600 rounded-2xl mb-4 shadow-lg shadow-orange-200">
                         <span className="text-white text-xl font-bold">P</span>
                     </div>
-                    <h1 className="text-3xl font-bold text-slate-900">PulseHR</h1>
-                    <p className="text-slate-500 mt-1 text-sm">Intelligent HR for modern teams</p>
+                    <h1 className="text-3xl font-bold text-stone-900">PulseHR</h1>
+                    <p className="text-stone-500 mt-1 text-sm">Intelligent HR for modern teams</p>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-lg shadow-slate-100">
+                <div className="bg-white border border-stone-200 rounded-2xl p-8 shadow-lg shadow-stone-100">
                     {/* role toggle */}
-                    <div className="flex bg-slate-100 rounded-xl p-1 mb-6">
+                    <div className="flex bg-stone-100 rounded-xl p-1 mb-6">
                         <button
                             type="button"
                             onClick={() => { setMode('admin'); setError('') }}
                             className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${mode === 'admin'
-                                    ? 'bg-white text-indigo-600 shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-700'
+                                ? 'bg-white text-orange-600 shadow-sm'
+                                : 'text-stone-500 hover:text-stone-700'
                                 }`}
                         >
                             Admin
@@ -61,18 +61,18 @@ export default function Login() {
                             type="button"
                             onClick={() => { setMode('employee'); setError('') }}
                             className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${mode === 'employee'
-                                    ? 'bg-white text-indigo-600 shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-700'
+                                ? 'bg-white text-orange-600 shadow-sm'
+                                : 'text-stone-500 hover:text-stone-700'
                                 }`}
                         >
                             Employee
                         </button>
                     </div>
 
-                    <h2 className="text-xl font-semibold text-slate-900 mb-1">
+                    <h2 className="text-xl font-semibold text-stone-900 mb-1">
                         {mode === 'admin' ? 'Admin Sign In' : 'Employee Sign In'}
                     </h2>
-                    <p className="text-slate-500 text-sm mb-6">
+                    <p className="text-stone-500 text-sm mb-6">
                         {mode === 'admin' ? 'Access your organization dashboard' : 'View and update your assigned tasks'}
                     </p>
 
@@ -84,7 +84,7 @@ export default function Login() {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                            <label className="block text-sm font-medium text-stone-700 mb-1.5">Email</label>
                             <input
                                 type="email" value={email}
                                 onChange={e => setEmail(e.target.value)}
@@ -93,7 +93,7 @@ export default function Login() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                            <label className="block text-sm font-medium text-stone-700 mb-1.5">Password</label>
                             <input
                                 type="password" value={password}
                                 onChange={e => setPassword(e.target.value)}
@@ -103,16 +103,16 @@ export default function Login() {
                         </div>
                         <button
                             type="submit" disabled={loading}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-md shadow-indigo-100 mt-2"
+                            className="w-full bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-md shadow-orange-100 mt-2"
                         >
                             {loading ? 'Signing in...' : 'Sign In'}
                         </button>
                     </form>
 
                     {mode === 'admin' && (
-                        <p className="text-center text-slate-500 text-sm mt-6">
+                        <p className="text-center text-stone-500 text-sm mt-6">
                             Don't have an account?{' '}
-                            <Link to="/register" className="text-indigo-600 hover:text-indigo-700 font-medium">
+                            <Link to="/register" className="text-orange-600 hover:text-orange-700 font-medium">
                                 Register your organization
                             </Link>
                         </p>

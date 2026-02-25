@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@import "./shared.css";
+@import "./Employees.css";
+@import "./Dashboard.css";
+@import "./Tasks.css";
+@import "./EmployeePortal.css";
+@import "./AIInsights.css";
+
+* {
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #fafaf9;
+  color: #1c1917;
+  margin: 0;
+}

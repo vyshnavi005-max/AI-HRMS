@@ -32,22 +32,22 @@ export default function Register() {
         }
     }
 
-    const inputCls = 'w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition'
+    const inputCls = 'w-full bg-stone-50 border border-stone-200 text-stone-900 placeholder-stone-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition'
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-violet-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-indigo-600 rounded-2xl mb-4 shadow-lg shadow-indigo-200">
+                    <div className="inline-flex items-center justify-center w-14 h-14 bg-orange-600 rounded-2xl mb-4 shadow-lg shadow-orange-200">
                         <span className="text-white text-xl font-bold">P</span>
                     </div>
-                    <h1 className="text-3xl font-bold text-slate-900">PulseHR</h1>
-                    <p className="text-slate-500 mt-1 text-sm">Register your organization</p>
+                    <h1 className="text-3xl font-bold text-stone-900">PulseHR</h1>
+                    <p className="text-stone-500 mt-1 text-sm">Register your organization</p>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-lg shadow-slate-100">
-                    <h2 className="text-xl font-semibold text-slate-900 mb-1">Create organization</h2>
-                    <p className="text-slate-500 text-sm mb-6">Get started in a few seconds</p>
+                <div className="bg-white border border-stone-200 rounded-2xl p-8 shadow-lg shadow-stone-100">
+                    <h2 className="text-xl font-semibold text-stone-900 mb-1">Create organization</h2>
+                    <p className="text-stone-500 text-sm mb-6">Get started in a few seconds</p>
 
                     {error && (
                         <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 text-sm">
@@ -57,36 +57,36 @@ export default function Register() {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">Organization name</label>
+                            <label className="block text-sm font-medium text-stone-700 mb-1.5">Organization name</label>
                             <input value={form.name} onChange={set('name')} required placeholder="Acme Corp" className={inputCls} />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">Admin email</label>
+                            <label className="block text-sm font-medium text-stone-700 mb-1.5">Admin email</label>
                             <input type="email" value={form.email} onChange={set('email')} required placeholder="admin@acme.com" className={inputCls} />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">Industry</label>
+                            <label className="block text-sm font-medium text-stone-700 mb-1.5">Industry</label>
                             <select value={form.industry} onChange={set('industry')} className={inputCls}>
                                 <option value="">Select industry...</option>
                                 {INDUSTRIES.map(i => <option key={i} value={i}>{i}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                            <label className="block text-sm font-medium text-stone-700 mb-1.5">Password</label>
                             <input type="password" value={form.password} onChange={set('password')} required placeholder="Min 6 characters" className={inputCls} />
                         </div>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition-all shadow-md shadow-indigo-100 mt-2"
+                            className="w-full bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition-all shadow-md shadow-orange-100 mt-2"
                         >
                             {loading ? 'Creating account...' : 'Register Organization'}
                         </button>
                     </form>
 
-                    <p className="text-center text-slate-500 text-sm mt-6">
+                    <p className="text-center text-stone-500 text-sm mt-6">
                         Already registered?{' '}
-                        <Link to="/login" className="text-indigo-600 hover:text-indigo-700 font-medium">Sign in</Link>
+                        <Link to="/login" className="text-orange-600 hover:text-orange-700 font-medium">Sign in</Link>
                     </p>
                 </div>
             </div>

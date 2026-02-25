@@ -1,187 +1,199 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import Sidebar from '../components/Sidebar';
-import { LuBrain, LuChevronDown, LuChevronUp } from 'react-icons/lu';
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { LuStar, LuZap } from 'react-icons/lu'
 
-const gradeColor = { A: 'text-green-600', B: 'text-blue-600', C: 'text-amber-600', D: 'text-orange-500', F: 'text-red-500', 'N/A': 'text-slate-400' };
-const gradeRing = { A: '#22c55e', B: '#6366f1', C: '#f59e0b', D: '#f97316', F: '#ef4444', 'N/A': '#cbd5e1' };
-const gradeBg = { A: 'bg-green-50 text-green-700 border-green-100', B: 'bg-indigo-50 text-indigo-700 border-indigo-100', C: 'bg-amber-50 text-amber-700 border-amber-100', D: 'bg-orange-50 text-orange-600 border-orange-100', F: 'bg-red-50 text-red-600 border-red-100', 'N/A': 'bg-slate-100 text-slate-500 border-slate-200' };
+const TABS = [
+    { key: 'productivity', label: 'Productivity', icon: LuStar },
+    { key: 'skillgap', label: 'Skill Gap', icon: LuZap },
+]
 
-function ScoreRing({ score, grade, size = 56 }) {
-    const r = (size / 2) - 6;
-    const circ = 2 * Math.PI * r;
-    const dash = ((score || 0) / 100) * circ;
-    return (
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
-            <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#f1f5f9" strokeWidth="6" />
-            <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={gradeRing[grade] || '#cbd5e1'} strokeWidth="6"
-                strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
-                style={{ transition: 'stroke-dasharray 0.8s ease' }} />
-        </svg>
-    );
+function GradeColor(grade) {
+    if (grade === 'A') return 'text-green-600 bg-green-50 border-green-100'
+    if (grade === 'B') return 'text-blue-600 bg-blue-50 border-blue-100'
+    if (grade === 'C') return 'text-amber-600 bg-amber-50 border-amber-100'
+    if (grade === 'D') return 'text-orange-600 bg-orange-50 border-orange-100'
+    return 'text-red-600 bg-red-50 border-red-100'
 }
 
 export default function AIInsights() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [expanded, setExpanded] = useState(null);
+    const [tab, setTab] = useState('productivity')
+    const [loading, setLoading] = useState(false)
 
-    const fetchData = useCallback(() => {
-        setLoading(true);
-        axios.get('/api/ai/productivity')
-            .then((r) => setData(r.data))
-            .catch(console.error)
-            .finally(() => setLoading(false));
-    }, []);
+    // productivity state
+    const [prodData, setProdData] = useState(null)
+    // skill gap state
+    const [gapData, setGapData] = useState(null)
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    useEffect(() => {
+        if (tab === 'productivity' && !prodData) fetchProductivity()
+        if (tab === 'skillgap' && !gapData) fetchSkillGap()
+    }, [tab])
 
-    const avg = data.length > 0 ? Math.round(data.reduce((s, e) => s + e.score, 0) / data.length) : 0;
+    const fetchProductivity = async () => {
+        setLoading(true)
+        try {
+            const res = await axios.get('/api/ai/productivity')
+            setProdData(res.data)
+        } catch (err) { console.error(err) }
+        finally { setLoading(false) }
+    }
+
+    const fetchSkillGap = async () => {
+        setLoading(true)
+        try {
+            const res = await axios.get('/api/ai/skill-gap')
+            setGapData(res.data)
+        } catch (err) { console.error(err) }
+        finally { setLoading(false) }
+    }
 
     return (
-        <div className="flex min-h-screen bg-slate-50">
-            <Sidebar />
-            <main className="flex-1 p-4 pt-20 lg:p-8 lg:pt-8 overflow-auto">
-
-                {/* Header */}
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2.5 bg-indigo-100 rounded-xl border border-indigo-200">
-                        <LuBrain size={20} className="text-indigo-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-xl lg:text-2xl font-bold text-slate-900">AI Productivity Scores</h1>
-                        <p className="text-slate-500 text-sm mt-0.5">Computed from task performance — no external API</p>
-                    </div>
+        <div>
+            <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                    <LuZap size={20} className="text-orange-600" />
                 </div>
+                <div>
+                    <h2 className="text-lg lg:text-xl font-bold text-stone-900">AI Insights</h2>
+                    <p className="text-stone-500 text-sm">Powered by Gemini AI + rule-based scoring</p>
+                </div>
+            </div>
 
-                {/* Loading */}
-                {loading ? (
-                    <div className="flex flex-col items-center gap-3 py-24">
-                        <div className="w-12 h-12 rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin" />
-                        <p className="text-slate-400 text-sm">Computing scores...</p>
-                    </div>
-                ) : data.length === 0 ? (
-                    <div className="text-center text-slate-400 py-24">No employees found. Add employees and assign tasks first.</div>
-                ) : (
-                    <>
-                        {/* Summary Cards */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-                            {[
-                                { label: 'Team Average', value: `${avg}%`, color: avg >= 70 ? 'text-green-600' : avg >= 40 ? 'text-amber-600' : 'text-red-500', bg: 'bg-green-50 border-green-100' },
-                                { label: 'Top Performer', value: data[0]?.name || '—', color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-100' },
-                                { label: 'A-Grade', value: data.filter(e => e.grade === 'A').length, color: 'text-green-600', bg: 'bg-green-50 border-green-100' },
-                                { label: 'Needs Attention', value: data.filter(e => ['D', 'F'].includes(e.grade)).length, color: 'text-red-500', bg: 'bg-red-50 border-red-100' },
-                            ].map(({ label, value, color, bg }) => (
-                                <div key={label} className={`border rounded-2xl p-4 ${bg}`}>
-                                    <p className="text-slate-500 text-xs mb-1">{label}</p>
-                                    <p className={`text-xl font-bold truncate ${color}`}>{value}</p>
-                                </div>
-                            ))}
-                        </div>
+            {/* tabs */}
+            <div className="flex gap-1 bg-stone-100 p-1 rounded-xl mb-6 w-fit">
+                {TABS.map(t => (
+                    <button key={t.key} onClick={() => setTab(t.key)}
+                        className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition ${tab === t.key ? 'bg-white text-orange-600 shadow-sm' : 'text-stone-500 hover:text-stone-700'
+                            }`}>
+                        <t.icon size={15} /> {t.label}
+                    </button>
+                ))}
+            </div>
 
-                        {/* Employee Score Cards */}
-                        <div className="space-y-2">
-                            {data.map((emp, i) => (
-                                <div key={emp.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:border-indigo-200 transition">
-                                    {/* Row */}
-                                    <div className="flex items-center gap-4 px-4 py-3 cursor-pointer" onClick={() => setExpanded(expanded === emp.id ? null : emp.id)}>
-                                        <span className="text-slate-400 font-bold w-5 text-right text-sm shrink-0">{i + 1}</span>
-
-                                        <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
-                                            <ScoreRing score={emp.score} grade={emp.grade} size={56} />
-                                            <span className={`absolute text-xs font-bold ${gradeColor[emp.grade]}`}>{emp.grade}</span>
-                                        </div>
-
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-slate-900 font-semibold text-sm">{emp.name}</p>
-                                                {!emp.is_active && <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">Inactive</span>}
-                                            </div>
-                                            <p className="text-slate-400 text-xs">{emp.role} · {emp.department}</p>
-                                        </div>
-
-                                        {/* Score bar — hidden on small screens */}
-                                        <div className="w-36 hidden md:block shrink-0">
-                                            <div className="flex justify-between text-xs mb-1">
-                                                <span className="text-slate-400">Score</span>
-                                                <span className={`font-semibold ${gradeColor[emp.grade]}`}>{emp.score}%</span>
-                                            </div>
-                                            <div className="bg-slate-100 rounded-full h-2 overflow-hidden">
-                                                <div className="h-full rounded-full transition-all duration-700"
-                                                    style={{ width: `${emp.score}%`, backgroundColor: gradeRing[emp.grade] }} />
-                                            </div>
-                                        </div>
-
-                                        <div className="text-right shrink-0 hidden lg:block">
-                                            <p className="text-slate-700 text-sm font-medium">{emp.stats?.completed ?? 0}/{emp.stats?.total ?? 0}</p>
-                                            <p className="text-slate-400 text-xs">tasks done</p>
-                                        </div>
-
-                                        <div className="text-slate-400 shrink-0">
-                                            {expanded === emp.id ? <LuChevronUp size={16} /> : <LuChevronDown size={16} />}
-                                        </div>
+            {loading ? (
+                <div className="flex flex-col items-center gap-3 py-20">
+                    <div className="w-10 h-10 rounded-full border-4 border-orange-100 border-t-orange-600 animate-spin" />
+                    <p className="text-stone-400 text-sm">Analyzing...</p>
+                </div>
+            ) : (
+                <>
+                    {/* ── PRODUCTIVITY TAB ── */}
+                    {tab === 'productivity' && prodData && (
+                        <div className="space-y-4">
+                            {prodData.aiSummary && (
+                                <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 flex gap-3">
+                                    <LuStar size={18} className="text-orange-500 mt-0.5 shrink-0" />
+                                    <div>
+                                        <p className="text-xs font-semibold text-orange-600 mb-1">AI Summary</p>
+                                        <p className="text-sm text-stone-700 leading-relaxed">{prodData.aiSummary}</p>
                                     </div>
-
-                                    {/* Expanded breakdown */}
-                                    {expanded === emp.id && (
-                                        <div className="border-t border-slate-100 px-4 py-4 grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-50">
-                                            {/* Score breakdown */}
-                                            <div>
-                                                <p className="text-slate-600 text-xs font-semibold mb-3 uppercase tracking-wider">Score Breakdown</p>
-                                                <div className="space-y-2">
-                                                    {[
-                                                        { label: 'Base completion rate', value: emp.breakdown?.base ?? 0, color: 'bg-blue-500', neg: false },
-                                                        { label: 'On-time speed bonus', value: emp.breakdown?.speedBonus ?? 0, color: 'bg-green-500', neg: false },
-                                                        { label: 'Overdue penalty', value: -(emp.breakdown?.overduePenalty ?? 0), color: 'bg-red-400', neg: true },
-                                                    ].map(({ label, value, color, neg }) => (
-                                                        <div key={label}>
-                                                            <div className="flex justify-between text-xs mb-1">
-                                                                <span className="text-slate-500">{label}</span>
-                                                                <span className={neg && value < 0 ? 'text-red-500' : 'text-slate-700'}>{neg && value < 0 ? '' : '+'}{value}</span>
-                                                            </div>
-                                                            <div className="bg-slate-200 rounded-full h-1">
-                                                                <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.abs(value)}%` }} />
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                    <div className="border-t border-slate-200 pt-2 flex justify-between text-sm">
-                                                        <span className="text-slate-600 font-medium">Final Score</span>
-                                                        <span className={`font-bold ${gradeColor[emp.grade]}`}>{emp.score}%</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* AI Insight + stats */}
-                                            <div>
-                                                <p className="text-slate-600 text-xs font-semibold mb-3 uppercase tracking-wider">AI Insight</p>
-                                                <div className="bg-white border border-slate-200 rounded-xl p-3 mb-3">
-                                                    <div className="flex gap-2">
-                                                        <LuBrain size={14} className="text-indigo-500 shrink-0 mt-0.5" />
-                                                        <p className="text-slate-600 text-xs leading-relaxed">{emp.insight}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="grid grid-cols-2 gap-2 text-xs">
-                                                    {[
-                                                        { label: 'Total tasks', value: emp.stats?.total ?? 0 },
-                                                        { label: 'Completed', value: emp.stats?.completed ?? 0 },
-                                                        { label: 'On-time', value: emp.stats?.completedOnTime ?? 0 },
-                                                        { label: 'Overdue', value: emp.stats?.overdue ?? 0 },
-                                                    ].map(({ label, value }) => (
-                                                        <div key={label} className="bg-white border border-slate-200 rounded-lg px-3 py-2">
-                                                            <p className="text-slate-400">{label}</p>
-                                                            <p className="text-slate-800 font-semibold">{value}</p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
-                            ))}
+                            )}
+                            <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-sm">
+                                <table className="w-full text-sm">
+                                    <thead className="bg-stone-50 border-b border-stone-200">
+                                        <tr>
+                                            <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase">Employee</th>
+                                            <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase">Score</th>
+                                            <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase">Grade</th>
+                                            <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase hidden sm:table-cell">Tasks</th>
+                                            <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase hidden md:table-cell">Insight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-stone-100">
+                                        {prodData.employees.map(emp => (
+                                            <tr key={emp.id} className="hover:bg-stone-50 transition">
+                                                <td className="px-5 py-3">
+                                                    <p className="font-medium text-stone-900">{emp.name}</p>
+                                                    <p className="text-xs text-stone-400">{emp.role}</p>
+                                                </td>
+                                                <td className="px-5 py-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-16 h-2 bg-stone-100 rounded-full overflow-hidden">
+                                                            <div className="h-full bg-orange-500 rounded-full transition-all" style={{ width: `${emp.score}%` }} />
+                                                        </div>
+                                                        <span className="text-stone-700 font-medium">{emp.score}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-5 py-3">
+                                                    <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold border ${GradeColor(emp.grade)}`}>{emp.grade}</span>
+                                                </td>
+                                                <td className="px-5 py-3 text-xs text-stone-500 hidden sm:table-cell">
+                                                    {emp.stats.completed}/{emp.stats.total} done
+                                                    {emp.stats.overdue > 0 && <span className="text-red-500 ml-1">({emp.stats.overdue} overdue)</span>}
+                                                </td>
+                                                <td className="px-5 py-3 text-xs text-stone-500 hidden md:table-cell max-w-xs truncate">{emp.insight}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                {prodData.employees.length === 0 && (
+                                    <p className="text-center text-stone-400 py-10 text-sm">No employees found. Add some first.</p>
+                                )}
+                            </div>
                         </div>
-                    </>
-                )}
-            </main>
+                    )}
+
+                    {/* ── SKILL GAP TAB ── */}
+                    {tab === 'skillgap' && gapData && (
+                        <div className="space-y-4">
+                            {gapData.aiSummary && (
+                                <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 flex gap-3">
+                                    <LuStar size={18} className="text-orange-500 mt-0.5 shrink-0" />
+                                    <div>
+                                        <p className="text-xs font-semibold text-orange-600 mb-1">AI Summary</p>
+                                        <p className="text-sm text-stone-700 leading-relaxed">{gapData.aiSummary}</p>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="grid gap-3 md:grid-cols-2">
+                                {gapData.employees.map(emp => {
+                                    const g = emp.gap
+                                    const barColor = g.coveragePercent >= 80 ? 'bg-green-500' :
+                                        g.coveragePercent >= 50 ? 'bg-amber-500' : 'bg-red-500'
+                                    return (
+                                        <div key={emp.id} className="bg-white border border-stone-200 rounded-2xl p-4 shadow-sm">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div>
+                                                    <p className="font-semibold text-stone-900 text-sm">{emp.name}</p>
+                                                    <p className="text-xs text-stone-400">{emp.role} · {emp.department}</p>
+                                                </div>
+                                                <span className="text-lg font-bold text-stone-700">{g.coveragePercent}%</span>
+                                            </div>
+                                            <div className="w-full h-2 bg-stone-100 rounded-full mb-3">
+                                                <div className={`h-full ${barColor} rounded-full transition-all`} style={{ width: `${g.coveragePercent}%` }} />
+                                            </div>
+                                            {g.missing.length > 0 && (
+                                                <div>
+                                                    <p className="text-xs text-stone-500 mb-1">Missing skills:</p>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {g.missing.map(s => (
+                                                            <span key={s} className="bg-red-50 text-red-600 text-xs px-2 py-0.5 rounded-md border border-red-100">{s}</span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {g.has.length > 0 && (
+                                                <div className="mt-2">
+                                                    <p className="text-xs text-stone-500 mb-1">Current skills:</p>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {g.has.map(s => (
+                                                            <span key={s} className="bg-green-50 text-green-600 text-xs px-2 py-0.5 rounded-md border border-green-100">{s}</span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                            {gapData.employees.length === 0 && (
+                                <p className="text-center text-stone-400 py-10 text-sm">No employees found.</p>
+                            )}
+                        </div>
+                    )}
+                </>
+            )}
         </div>
-    );
+    )
 }
