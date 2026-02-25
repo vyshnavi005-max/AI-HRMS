@@ -6,10 +6,11 @@ const db = require('../db/db')
 
 const SECRET = process.env.JWT_SECRET || 'dev_secret_change_this'
 
+const isProd = process.env.NODE_ENV === 'production'
 const cookieOpts = {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: isProd ? 'none' : 'lax',
+    secure: isProd,
     maxAge: 7 * 24 * 60 * 60 * 1000
 }
 
@@ -113,7 +114,7 @@ router.post('/employee-login', async (req, res) => {
 
 // ─── logout (works for both) ───
 router.post('/logout', (req, res) => {
-    res.clearCookie('token', { httpOnly: true, sameSite: 'lax' })
+    res.clearCookie('token', cookieOpts)
     res.json({ ok: true })
 })
 
