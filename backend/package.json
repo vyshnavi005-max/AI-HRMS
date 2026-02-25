@@ -1,0 +1,31 @@
+{
+  "name": "rizeos-hrms-backend",
+  "version": "1.0.0",
+  "description": "Mini AI-HRMS Backend — RizeOS Assignment",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "db:migrate": "node -e \"require('./db').query(require('fs').readFileSync('./schema.sql','utf8')).then(()=>{console.log('✅ Schema applied');process.exit(0)}).catch(e=>{console.error(e);process.exit(1)})\""
+  },
+  "keywords": [
+    "hrms",
+    "ai",
+    "web3"
+  ],
+  "author": "RizeOS Assignment",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
