@@ -26,9 +26,7 @@ function NavContent({ onClose }) {
         <div className="flex flex-col h-full">
             <div className="flex items-center justify-between px-5 py-4 border-b border-stone-100">
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-orange-600 rounded-xl flex items-center justify-center shadow-md shadow-orange-200">
-                        <span className="text-white font-bold text-sm">P</span>
-                    </div>
+
                     <div>
                         <p className="text-stone-900 font-bold text-sm leading-tight">PulseHR</p>
                         <p className="text-stone-400 text-xs truncate max-w-[110px]">{org?.name}</p>

@@ -123,9 +123,7 @@ export default function EmployeePortal() {
             {/* top bar */}
             <header className="bg-white border-b border-stone-200 px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-orange-600 rounded-xl flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">P</span>
-                    </div>
+
                     <div>
                         <p className="text-stone-900 font-bold text-sm">PulseHR</p>
                         <p className="text-stone-400 text-xs">Employee Portal</p>
