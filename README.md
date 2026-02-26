@@ -2,7 +2,7 @@
 
 > An intelligent Human Resource Management System that uses **Google Gemini AI** for performance analytics and **Ethereum blockchain** for tamper-proof task completion records.
 
-## 🔗 Live Demo
+## Live Demo
 
 | Service | URL |
 |---------|-----|
@@ -14,7 +14,7 @@
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 AI-HRMS/
@@ -55,7 +55,7 @@ AI-HRMS/
 
 ---
 
-## 🧠 AI Logic — Model & Scoring Explanation
+## AI Logic — Model & Scoring Explanation
 
 PulseHR uses a **hybrid AI approach**: deterministic rule-based scoring for consistency, enhanced with **Google Gemini 2.0 Flash** for natural language insights. The AI Insights dashboard has two modules:
 
@@ -114,7 +114,7 @@ The Gemini calls are **non-blocking** — if the API fails, the system gracefull
 
 ---
 
-## 🔗 Wallet / Blockchain Integration
+## Wallet / Blockchain Integration
 
 PulseHR implements **Ethereum-compatible message signing** for tamper-proof task completion verification.
 
@@ -154,7 +154,7 @@ Completed: <ISO timestamp>
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -168,7 +168,7 @@ Completed: <ISO timestamp>
 
 ---
 
-## 🛠️ Local Development Setup
+## Local Development Setup
 
 ### Prerequisites
 - Node.js ≥ 20
@@ -217,7 +217,7 @@ The frontend runs on `http://localhost:5173` and proxies `/api` requests to the 
 
 ---
 
-## 📡 API Reference
+## API Reference
 
 ### Authentication
 | Method | Endpoint | Description |
@@ -257,7 +257,7 @@ The frontend runs on `http://localhost:5173` and proxies `/api` requests to the 
 
 ---
 
-## 📊 Database Schema
+## Database Schema
 
 ```sql
 organizations    — Multi-tenant admin accounts
@@ -269,7 +269,7 @@ See [`backend/db/schema.sql`](backend/db/schema.sql) for the full schema.
 
 ---
 
-## 🎥 Demo Video Suggested Outline
+## Demo Video Suggested Outline
 
 A 15–20 minute walkthrough covering:
 
@@ -284,6 +284,6 @@ A 15–20 minute walkthrough covering:
 
 ---
 
-## 📄 License
+## License
 
 ISC
