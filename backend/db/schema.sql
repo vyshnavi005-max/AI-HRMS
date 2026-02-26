@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   priority VARCHAR(20) DEFAULT 'Medium' CHECK (priority IN ('Low', 'Medium', 'High')),
   due_date DATE,
   completed_at TIMESTAMP,
-  tx_hash VARCHAR(100),
+  tx_hash VARCHAR(255),
   created_at TIMESTAMP DEFAULT NOW()
 );
 
