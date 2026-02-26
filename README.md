@@ -57,7 +57,7 @@ AI-HRMS/
 
 ## 🧠 AI Logic — Model & Scoring Explanation
 
-PulseHR uses a **hybrid AI approach**: deterministic rule-based scoring for consistency, enhanced with **Google Gemini 2.0 Flash** for natural language insights.
+PulseHR uses a **hybrid AI approach**: deterministic rule-based scoring for consistency, enhanced with **Google Gemini 2.0 Flash** for natural language insights. The AI Insights dashboard has two modules:
 
 ### 1. Productivity Scoring Algorithm
 
@@ -100,26 +100,11 @@ For each employee, the algorithm:
 3. Computes **coverage percentage** = `(matched / required) × 100`
 4. Returns the list of missing skills
 
-### 3. Smart Task Recommendation
-
-When assigning tasks, the system ranks employees by a weighted score:
-
-```
-Recommendation Score = Skill Match (50%) + Workload (30%) + Productivity (20%)
-```
-
-| Factor | Calculation | Weight |
-|--------|-------------|--------|
-| **Skill Match** | `(matched_skills / required_skills) × 50` | 50 pts |
-| **Workload** | `30 − (active_tasks × 6)`, min 0 | 30 pts |
-| **Productivity** | `(productivity_score / 100) × 20` | 20 pts |
-
-### 4. Gemini AI Integration
+### 3. Gemini AI Integration
 
 On top of the rule-based scores, the system sends structured data to **Gemini 2.0 Flash** for:
 - **Team Performance Summaries**: Natural language review of top performers, concerns, and actionable recommendations
 - **Skill Gap Analysis**: Training priority suggestions and which employees need the most attention
-- **Assignment Reasoning**: Explanation of why a specific employee is the best fit for a task
 
 The Gemini calls are **non-blocking** — if the API fails, the system gracefully falls back to the rule-based results.
 
@@ -264,7 +249,6 @@ The frontend runs on `http://localhost:5173` and proxies `/api` requests to the 
 |--------|----------|-------------|
 | GET | `/api/ai/productivity` | Productivity scores + Gemini summary |
 | GET | `/api/ai/skill-gap` | Skill gap analysis + Gemini summary |
-| POST | `/api/ai/assign` | Smart task assignment recommendations |
 
 ### Dashboard
 | Method | Endpoint | Description |

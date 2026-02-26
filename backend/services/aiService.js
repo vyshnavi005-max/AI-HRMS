@@ -83,41 +83,6 @@ function detectSkillGap(employee) {
     return { required, missing, has: employee.skills || [], coveragePercent }
 }
 
-// ── smart task recommendation ──
-
-function recommendEmployee(task, employees, allTasks) {
-    if (!employees?.length) return []
-
-    const reqSkills = (task.required_skills || []).map(s => s.toLowerCase())
-
-    return employees
-        .filter(e => e.is_active)
-        .map(emp => {
-            const empTasks = allTasks.filter(t => t.employee_id === emp.id)
-            const activeTasks = empTasks.filter(t => t.status !== 'Completed').length
-            const empSkills = (emp.skills || []).map(s => s.toLowerCase().trim())
-
-            const matchedSkills = reqSkills.filter(req =>
-                empSkills.some(s => s.includes(req) || req.includes(s))
-            )
-            const skillScore = reqSkills.length > 0 ? (matchedSkills.length / reqSkills.length) * 50 : 50
-            const workloadScore = Math.max(0, 30 - activeTasks * 6)
-            const { score: prodScore } = calculateProductivityScore(emp, empTasks)
-            const prodContrib = (prodScore / 100) * 20
-            const totalScore = Math.round(skillScore + workloadScore + prodContrib)
-
-            return {
-                employee: emp,
-                totalScore, matchedSkills, activeTasks,
-                breakdown: {
-                    skillScore: Math.round(skillScore),
-                    workloadScore: Math.round(workloadScore),
-                    prodContrib: Math.round(prodContrib)
-                }
-            }
-        })
-        .sort((a, b) => b.totalScore - a.totalScore)
-}
 
 // ── gemini-powered insights ──
 
@@ -162,27 +127,11 @@ Keep it professional but conversational. No markdown formatting, just plain text
     return getGeminiInsight(prompt)
 }
 
-async function getAssignmentInsight(task, recommendations) {
-    const top3 = recommendations.slice(0, 3).map(r =>
-        `${r.employee.name} (${r.employee.role}): score=${r.totalScore}, skills matched=${r.matchedSkills.join(', ') || 'none'}, active tasks=${r.activeTasks}`
-    ).join('\n')
-
-    const prompt = `You are an HR analytics AI assistant. A new task "${task.title}" needs to be assigned. Based on the ranking below, explain in 2-3 sentences why the top candidate is the best fit and any concerns about the others.
-
-Top Candidates:
-${top3}
-
-Keep it professional but conversational. No markdown formatting, just plain text.`
-
-    return getGeminiInsight(prompt)
-}
 
 module.exports = {
     calculateProductivityScore,
     detectSkillGap,
-    recommendEmployee,
     getProductivityInsight,
     getSkillGapInsight,
-    getAssignmentInsight,
     ROLE_SKILLS
 }
