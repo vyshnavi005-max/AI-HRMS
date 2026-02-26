@@ -150,8 +150,8 @@ router.patch('/:id/status', async (req, res) => {
         )
         res.json(result.rows[0])
     } catch (err) {
-        console.error('update status:', err.message)
-        res.status(500).json({ error: 'Failed to update status' })
+        console.error('update status:', err.message, err.stack)
+        res.status(500).json({ error: 'Failed to update status', detail: err.message })
     }
 })
 
